@@ -1,1 +1,1 @@
-# Pshyhologists.Services
+# Psyсhologists.Services
