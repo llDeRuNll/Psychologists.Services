@@ -10,6 +10,11 @@ export const createPsychologistSchema = Joi.object({
     'string.empty': 'Experience cannot be empty',
     'string.min': 'Experience should have a minimum length of {#limit}',
   }),
+  rating: Joi.number().min(1).max(5).required().messages({
+    'number.base': 'Rating must be a number',
+    'number.min': 'Rating must be at least {#limit}',
+    'number.max': 'Rating cannot exceed {#limit}',
+  }),
   price_per_hour: Joi.number().min(0).required().messages({
     'number.base': 'Price per hour must be a number',
     'number.min': 'Price per hour cannot be negative',
@@ -34,6 +39,7 @@ const dataToValidate = {
   avatar_url: 'https://example.com/avatar.jpg',
   experience: '5 years',
   price_per_hour: 100,
+  rating: 4.5,
   license: 'Licensed Psychologist',
   specialization: 'Cognitive Behavioral Therapy',
   initial_consultation: 'Free 15-minute consultation',
@@ -54,6 +60,11 @@ export const upsertPsychologistSchema = Joi.object({
   name: Joi.string().min(3).max(30).messages({
     'string.empty': 'Name cannot be empty',
     'string.min': 'Name should have a minimum length of {#limit}',
+  }),
+  rating: Joi.number().min(1).max(5).messages({
+    'number.base': 'Rating must be a number',
+    'number.min': 'Rating must be at least {#limit}',
+    'number.max': 'Rating cannot exceed {#limit}',
   }),
   avatar_url: Joi.string().uri().optional().allow(''),
   experience: Joi.string().min(1).max(100).messages({
