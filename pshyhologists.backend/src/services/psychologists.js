@@ -3,27 +3,77 @@
 import { SORT_ORDER } from '../constans/index.js';
 import { PsychologistsCollection } from '../db/models/psychologists.js';
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
+import { extractNumber } from '../utils/parseFilterParams.js';
 
-export const getAllPsychologists = async (
+export const getAllPsychologists = async ({
   page = 1,
   perPage = 10,
   sortBy = '_id',
   sortOrder = SORT_ORDER.ASC,
-) => {
-  const skip = (page - 1) * perPage;
-  const [psychologists, total] = await Promise.all([
-    PsychologistsCollection.find()
-      .skip(skip)
-      .limit(perPage)
-      .sort({ [sortBy]: sortOrder })
-      .exec(),
+  filter = {},
+} = {}) => {
+  const mongoQuery = PsychologistsCollection.find();
 
-    PsychologistsCollection.countDocuments(),
-  ]);
+  if (filter.specialization) {
+    if (filter.specialization.includes(',')) {
+      mongoQuery
+        .where('specialization')
+        .in(filter.specialization.split(',').map((s) => s.trim()));
+    } else {
+      mongoQuery.where('specialization').equals(filter.specialization);
+    }
+  }
+
+  if (filter.minPrice !== undefined) {
+    mongoQuery.where('price_per_hour').gte(filter.minPrice);
+  }
+  if (filter.maxPrice !== undefined) {
+    mongoQuery.where('price_per_hour').lte(filter.maxPrice);
+  }
+
+  if (filter.minRating !== undefined) {
+    mongoQuery.where('rating').gte(filter.minRating);
+  }
+  if (filter.maxRating !== undefined) {
+    mongoQuery.where('rating').lte(filter.maxRating);
+  }
+
+  if (filter.license) {
+    mongoQuery.where('license').equals(filter.license);
+  }
+
+  if (filter.initial_consultation) {
+    mongoQuery.where('initial_consultation', {
+      $regex: filter.initial_consultation,
+      $options: 'i',
+    });
+  }
+
+  const all = await mongoQuery.sort({ [sortBy]: sortOrder }).exec();
+
+  const withExpFilter = all.filter((item) => {
+    const exp = extractNumber(item.experience);
+
+    if (filter.minExperience !== undefined && exp < filter.minExperience) {
+      return false;
+    }
+    if (filter.maxExperience !== undefined && exp > filter.maxExperience) {
+      return false;
+    }
+    return true;
+  });
+
+  const total = withExpFilter.length;
+  const start = (page - 1) * perPage;
+  const end = start + perPage;
+  const paginated = withExpFilter.slice(start, end);
 
   const paginationData = calculatePaginationData(total, perPage, page);
 
-  return { data: psychologists, ...paginationData };
+  return {
+    data: paginated,
+    ...paginationData,
+  };
 };
 
 export const getPsychologistById = async (psychologistId) => {
@@ -53,15 +103,14 @@ export const upsertPsycholog = async (
     payload,
     {
       new: true,
-      includeResultMetadata: true,
       ...options,
     },
   );
 
-  if (!rawResult || !rawResult.value) return null;
+  if (!rawResult) return null;
 
   return {
-    psychologist: rawResult.value,
-    isNew: Boolean(rawResult?.lastErrorObject?.upserted),
+    psychologist: rawResult,
+    isNew: false,
   };
 };
