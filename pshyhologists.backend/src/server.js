@@ -1,11 +1,12 @@
 // src/server.js
 import express from 'express';
 import pino from 'pino-http';
+import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import psychologistsRouter from './router/psychologists.js';
 import { getEnvVar } from './utils/getEnvVar.js';
 import { notFoundHandler } from './middlewares/notFoundHandler.js';
 import { errorHandler } from './middlewares/errorHandler.js';
+import router from './router/index.js';
 
 const PORT = Number(getEnvVar('PORT', '3000'));
 
@@ -19,13 +20,14 @@ export const startServer = () => {
     }),
   );
   app.use(cors());
+  app.use(cookieParser());
   app.use(
     pino({
       transport: { target: 'pino-pretty' },
     }),
   );
 
-  app.use('/', psychologistsRouter);
+  app.use(router);
 
   app.use(notFoundHandler);
 

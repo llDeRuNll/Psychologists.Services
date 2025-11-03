@@ -9,51 +9,52 @@ import {
   patchPsychologController,
 } from '../controllers/psychologists.js';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
-import { validateBody } from '../middlewares/validateBody.js';
+
 import {
   createPsychologistSchema,
   upsertPsychologistSchema,
 } from '../validation/psychologist.js';
 import { isValidId } from '../middlewares/isValidId.js';
+import { validateBody } from '../middlewares/validateBody.js';
 
 const router = Router();
 
-// GET /psychologists
-router.get('/psychologists', ctrlWrapper(getAllPsychologistsController));
+// GET /
+router.get('/', ctrlWrapper(getAllPsychologistsController));
 
-// GET /psychologists/:psychologistId
+// GET /:psychologistId
 router.get(
-  '/psychologists/:psychologistId',
+  '/:psychologistId',
   isValidId,
   ctrlWrapper(getPsychologistByIdController),
 );
 
-// POST /psychologists
+// POST /
 router.post(
-  '/psychologists',
+  '/',
   validateBody(createPsychologistSchema),
   ctrlWrapper(createPsychologistController),
 );
 export default router;
 
-//DELETE /psychologists/:psychologistId
+//DELETE /:psychologistId
 router.delete(
-  '/psychologists/:psychologistId',
+  '/:psychologistId',
   isValidId,
   ctrlWrapper(deletePsychologistController),
 );
 
-//PUT psychologists/:psychologistId
+//PUT /:psychologistId
 router.put(
-  '/psychologists/:psychologistId',
+  '/:psychologistId',
   isValidId,
   validateBody(upsertPsychologistSchema),
   ctrlWrapper(upsertPsychologController),
 );
 
-//Patch psychologists/:psychologistId
+//Patch /:psychologistId
 router.patch(
-  '/psychologists/:psychologistId',
+  '/:psychologistId',
   isValidId,
   validateBody(upsertPsychologistSchema),
   ctrlWrapper(patchPsychologController),
