@@ -1,4 +1,5 @@
 import Joi from 'joi';
+import { isValidObjectId } from 'mongoose';
 
 export const createPsychologistSchema = Joi.object({
   name: Joi.string().min(3).max(30).required().messages({
@@ -31,6 +32,12 @@ export const createPsychologistSchema = Joi.object({
   about: Joi.string().max(8000).required().messages({
     'string.empty': 'About cannot be empty',
     'string.max': 'About should have a maximum length of {#limit}',
+  }),
+  parentUserId: Joi.string().custom((value, helpers) => {
+    if (value && !isValidObjectId(value)) {
+      return helpers.message('parentUserId must be a valid ObjectId');
+    }
+    return true;
   }),
 });
 

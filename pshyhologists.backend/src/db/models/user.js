@@ -1,13 +1,18 @@
 // src/db/models/user.js
 
 import { model, Schema } from 'mongoose';
+import { ROLES } from '../../constans/index.js';
 
 const usersSchema = new Schema(
   {
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    role: { type: String, enum: ['psychologist', 'client'], required: true },
+    role: {
+      type: String,
+      enum: [ROLES.PSYCHOLOGIST, ROLES.CLIENT],
+      default: ROLES.CLIENT,
+    },
   },
   {
     timestamps: true,

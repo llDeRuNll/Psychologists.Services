@@ -16,8 +16,13 @@ import {
 } from '../validation/psychologist.js';
 import { isValidId } from '../middlewares/isValidId.js';
 import { validateBody } from '../middlewares/validateBody.js';
+import { authenticate } from '../middlewares/authenticate.js';
+import { checkRoles } from '../middlewares/checkRoles.js';
+import { ROLES } from '../constans/index.js';
 
 const router = Router();
+
+router.use(authenticate);
 
 // GET /
 router.get('/', ctrlWrapper(getAllPsychologistsController));
@@ -26,12 +31,14 @@ router.get('/', ctrlWrapper(getAllPsychologistsController));
 router.get(
   '/:psychologistId',
   isValidId,
+  checkRoles(ROLES.CLIENT),
   ctrlWrapper(getPsychologistByIdController),
 );
 
 // POST /
 router.post(
   '/',
+  checkRoles(ROLES.PSYCHOLOGIST),
   validateBody(createPsychologistSchema),
   ctrlWrapper(createPsychologistController),
 );
@@ -41,6 +48,7 @@ export default router;
 router.delete(
   '/:psychologistId',
   isValidId,
+  checkRoles(ROLES.PSYCHOLOGIST),
   ctrlWrapper(deletePsychologistController),
 );
 
@@ -48,6 +56,7 @@ router.delete(
 router.put(
   '/:psychologistId',
   isValidId,
+  checkRoles(ROLES.PSYCHOLOGIST),
   validateBody(upsertPsychologistSchema),
   ctrlWrapper(upsertPsychologController),
 );
@@ -56,6 +65,7 @@ router.put(
 router.patch(
   '/:psychologistId',
   isValidId,
+  checkRoles(ROLES.PSYCHOLOGIST),
   validateBody(upsertPsychologistSchema),
   ctrlWrapper(patchPsychologController),
 );
