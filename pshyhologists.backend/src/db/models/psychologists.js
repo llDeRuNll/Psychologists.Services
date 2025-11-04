@@ -27,6 +27,7 @@ const psychologistsSchema = new Schema(
 
     initial_consultation: { type: String, trim: true },
     about: { type: String, required: true, trim: true, maxlength: 8000 },
+    ParentUserId: { type: Schema.Types.ObjectId, ref: 'users' },
   },
   {
     collection: 'psychologists',
