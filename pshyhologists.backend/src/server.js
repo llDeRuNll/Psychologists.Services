@@ -27,6 +27,8 @@ export const startServer = () => {
     }),
   );
 
+  app.use('/uploads', express.static('UPLOAD_DIR'));
+
   app.use(router);
 
   app.use(notFoundHandler);

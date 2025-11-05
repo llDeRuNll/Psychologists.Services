@@ -11,6 +11,9 @@ import mongoose from 'mongoose';
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
 import { parseFilterParams } from '../utils/parseFilterParams.js';
+import { saveFileToUploadDir } from '../utils/saveFileToUploadDir.js';
+import { getEnvVar } from '../utils/getEnvVar.js';
+import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
 
 export const getAllPsychologistsController = async (req, res, next) => {
   try {
@@ -93,15 +96,27 @@ export const upsertPsychologController = async (req, res) => {
   });
 };
 
-export const patchPsychologController = async (req, res) => {
+export const patchPsychologController = async (req, res, next) => {
   const { psychologistId } = req.params;
+  const photo = req.file;
 
-  const result = await upsertPsycholog(psychologistId, req.body);
-  if (!result) throw createHttpError(404, 'Psychologist not found');
+  let avatar_url;
+  if (photo) {
+    if (getEnvVar('ENABLE_CLOUDINARY') === 'true') {
+      avatar_url = await saveFileToCloudinary(photo);
+    } else {
+      avatar_url = await saveFileToUploadDir(photo);
+    }
 
-  res.status(200).json({
-    status: 200,
-    message: `Successfully patched psychologist with id ${psychologistId}!`,
-    data: result.psychologist,
-  });
+    const result = await upsertPsycholog(psychologistId, req.body, {
+      photo: avatar_url,
+    });
+    if (!result) throw createHttpError(404, 'Psychologist not found');
+
+    res.status(200).json({
+      status: 200,
+      message: `Successfully patched psychologist with id ${psychologistId}!`,
+      data: result.psychologist,
+    });
+  }
 };
