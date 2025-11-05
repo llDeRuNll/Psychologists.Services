@@ -19,6 +19,7 @@ import { validateBody } from '../middlewares/validateBody.js';
 import { authenticate } from '../middlewares/authenticate.js';
 import { checkRoles } from '../middlewares/checkRoles.js';
 import { ROLES } from '../constans/index.js';
+import { upload } from '../middlewares/multer.js';
 
 const router = Router();
 
@@ -39,6 +40,7 @@ router.get(
 router.post(
   '/',
   checkRoles(ROLES.PSYCHOLOGIST),
+  upload.single('photo'),
   validateBody(createPsychologistSchema),
   ctrlWrapper(createPsychologistController),
 );
@@ -56,6 +58,7 @@ router.delete(
 router.put(
   '/:psychologistId',
   isValidId,
+  upload.single('photo'),
   checkRoles(ROLES.PSYCHOLOGIST),
   validateBody(upsertPsychologistSchema),
   ctrlWrapper(upsertPsychologController),
@@ -65,6 +68,7 @@ router.put(
 router.patch(
   '/:psychologistId',
   isValidId,
+  upload.single('photo'),
   checkRoles(ROLES.PSYCHOLOGIST),
   validateBody(upsertPsychologistSchema),
   ctrlWrapper(patchPsychologController),

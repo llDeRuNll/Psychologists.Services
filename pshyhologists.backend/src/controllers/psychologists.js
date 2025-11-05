@@ -11,6 +11,7 @@ import mongoose from 'mongoose';
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
 import { parseFilterParams } from '../utils/parseFilterParams.js';
+import { saveFileToUploadDir } from '../utils/saveFileToUploadDir.js';
 
 export const getAllPsychologistsController = async (req, res, next) => {
   try {
@@ -93,10 +94,18 @@ export const upsertPsychologController = async (req, res) => {
   });
 };
 
-export const patchPsychologController = async (req, res) => {
+export const patchPsychologController = async (req, res, next) => {
   const { psychologistId } = req.params;
+  const photo = req.file;
 
-  const result = await upsertPsycholog(psychologistId, req.body);
+  let avatar_url;
+  if (photo) {
+    avatar_url = await saveFileToUploadDir(photo);
+  }
+
+  const result = await upsertPsycholog(psychologistId, req.body, {
+    photo: avatar_url,
+  });
   if (!result) throw createHttpError(404, 'Psychologist not found');
 
   res.status(200).json({
