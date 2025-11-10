@@ -1,0 +1,38 @@
+# swagger/paths/psychologists/{id}/get.yaml
+tags:
+  - Psychologists
+summary: Get psychologist by id
+operationId: getPsychologist
+description: 'Get psychologist by id'
+security:
+  - bearerAuth: []
+parameters:
+  - in: path
+    name: id
+    required: true
+    schema:
+      type: string
+      example: '65ca67e7ae7f10c88b598384'
+responses:
+  '200':
+    description: 'Get psychologist by id'
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: Successfully found psychologist with id 65ca67e7ae7f10c88b598384!
+            data:
+              type: object
+              $ref: '../../../components/schemas/psychologist.yaml'
+  '401':
+    $ref: '../../../components/responses/401.yaml'
