@@ -1,1 +1,658 @@
-{}
+{
+  "openapi": "3.1.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Psychologist app",
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "description": "This is a documentation of psychologist app"
+  },
+  "servers": [
+    {
+      "url": "https://pshyhologists.service.api"
+    },
+    {
+      "url": "/"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Psychologists",
+      "description": "Operations about psychologists."
+    },
+    {
+      "name": "Auth",
+      "description": "Auth operations."
+    }
+  ],
+  "paths": {
+    "/pshyhologists": {
+      "get": {
+        "tags": [
+          "Psychologists"
+        ],
+        "summary": "Get psychologists (paginated)",
+        "operationId": "getPsychologists",
+        "description": "Returns a paginated list of psychologists with optional sorting and filtering.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            },
+            "description": "Page number (1-based)"
+          },
+          {
+            "in": "query",
+            "name": "perPage",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 10
+            },
+            "description": "Items per page"
+          },
+          {
+            "in": "query",
+            "name": "sortBy",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "_id",
+                "name",
+                "specialization",
+                "experience",
+                "rating",
+                "price_per_hour",
+                "createdAt",
+                "updatedAt"
+              ]
+            },
+            "description": "Sort field"
+          },
+          {
+            "in": "query",
+            "name": "sortOrder",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "default": "asc"
+            },
+            "description": "Sort order"
+          },
+          {
+            "in": "query",
+            "name": "specialization",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "minExperience",
+            "schema": {
+              "type": "number",
+              "minimum": 0
+            },
+            "description": "Minimal experience in years (numeric)"
+          },
+          {
+            "in": "query",
+            "name": "maxExperience",
+            "schema": {
+              "type": "number",
+              "minimum": 0
+            },
+            "description": "Max experience in years (numeric)"
+          },
+          {
+            "in": "query",
+            "name": "minPrice",
+            "schema": {
+              "type": "number",
+              "minimum": 0
+            }
+          },
+          {
+            "in": "query",
+            "name": "maxPrice",
+            "schema": {
+              "type": "number",
+              "minimum": 0
+            }
+          },
+          {
+            "in": "query",
+            "name": "minRating",
+            "schema": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 5
+            }
+          },
+          {
+            "in": "query",
+            "name": "maxRating",
+            "schema": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 5
+            }
+          },
+          {
+            "in": "query",
+            "name": "license",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "initial_consultation",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200.psychologists.list"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Psychologists"
+        ],
+        "summary": "Create psychologist",
+        "operationId": "createPsychologist",
+        "description": "Create a psychologist with payload",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "experience",
+                  "price_per_hour",
+                  "license",
+                  "specialization",
+                  "about"
+                ],
+                "properties": {
+                  "name": {
+                    "description": "Psychologist's name",
+                    "type": "string",
+                    "example": "Dr. Jane Smith"
+                  },
+                  "avatar": {
+                    "description": "Psychologist's avatar file (optional)",
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "avatar_url": {
+                    "description": "Avatar URL (optional, used if no file uploaded)",
+                    "type": "string",
+                    "example": "https://example.com/avatar.jpg"
+                  },
+                  "experience": {
+                    "description": "Experience as a human-readable string",
+                    "type": "string",
+                    "example": "5 years"
+                  },
+                  "price_per_hour": {
+                    "description": "Hourly rate (>= 0)",
+                    "type": "number",
+                    "example": 100
+                  },
+                  "rating": {
+                    "description": "Initial rating (0..5, optional)",
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 5,
+                    "example": 4.5
+                  },
+                  "license": {
+                    "description": "License text",
+                    "type": "string",
+                    "example": "Licensed Psychologist (License #12345)"
+                  },
+                  "specialization": {
+                    "description": "Primary specialization",
+                    "type": "string",
+                    "example": "Cognitive Behavioral Therapy"
+                  },
+                  "initial_consultation": {
+                    "description": "Initial consultation info (optional)",
+                    "type": "string",
+                    "example": "Free 15-minute initial consultation"
+                  },
+                  "about": {
+                    "description": "About the psychologist",
+                    "type": "string",
+                    "example": "Licensed psychologist with CBT focus and 5 years of practice."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Creates a psychologist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 201
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Successfully created a Psychologist!"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/psychologist"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/pshyhologists/{id}": {
+      "get": {
+        "tags": [
+          "Psychologists"
+        ],
+        "summary": "Get psychologist by id",
+        "operationId": "getPsychologist",
+        "description": "Get psychologist by id",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "65ca67e7ae7f10c88b598384"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get psychologist by id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Successfully found psychologist with id 65ca67e7ae7f10c88b598384!"
+                    },
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/psychologist"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    },
+    "schemas": {
+      "psychologist": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Mongo ObjectId",
+            "pattern": "^[a-fA-F0-9]{24}$",
+            "example": "68fff9a7b8f32292632fa4cc"
+          },
+          "name": {
+            "type": "string",
+            "example": "Dr. Jane Smith"
+          },
+          "avatar_url": {
+            "type": "string",
+            "format": "uri",
+            "example": "https://example.com/avatar.jpg"
+          },
+          "experience": {
+            "type": "string",
+            "description": "Years of experience in text form",
+            "example": "5 years"
+          },
+          "price_per_hour": {
+            "type": "number",
+            "minimum": 0,
+            "example": 100
+          },
+          "reviews": {
+            "type": "array"
+          },
+          "rating": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 5,
+            "default": 0,
+            "example": 4.5
+          },
+          "license": {
+            "type": "string",
+            "example": "Licensed Psychologist (License #12345)"
+          },
+          "specialization": {
+            "type": "string",
+            "example": "Cognitive Behavioral Therapy"
+          },
+          "initial_consultation": {
+            "type": "string",
+            "example": "Free 15-minute initial consultation"
+          },
+          "about": {
+            "type": "string",
+            "maxLength": 8000,
+            "example": "Licensed psychologist with CBT focus and 5 years of practice."
+          },
+          "ParentUserId": {
+            "type": "string",
+            "description": "Reference to users._id",
+            "pattern": "^[a-fA-F0-9]{24}$",
+            "example": "6903c1b40b8a4cb0b156c14c"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "name",
+          "experience",
+          "price_per_hour",
+          "license",
+          "specialization",
+          "about"
+        ]
+      }
+    },
+    "responses": {
+      "400": {
+        "description": "Bad Request (validation or malformed input)",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "status",
+                "message"
+              ],
+              "properties": {
+                "status": {
+                  "type": "integer",
+                  "example": 400
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Invalid payload"
+                },
+                "errors": {
+                  "type": "array",
+                  "description": "Validation details (e.g., Joi)",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "message": {
+                        "type": "string",
+                        "example": "\"name\" is required"
+                      },
+                      "path": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "401": {
+        "description": "Unauthorized error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "status",
+                "message",
+                "data"
+              ],
+              "properties": {
+                "status": {
+                  "type": "integer",
+                  "example": 401
+                },
+                "message": {
+                  "type": "string",
+                  "example": "UnauthorizedError"
+                },
+                "data": {
+                  "type": "object",
+                  "required": [
+                    "message"
+                  ],
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Access token expired"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "403": {
+        "description": "Forbidden (insufficient role/permissions)",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "status",
+                "message"
+              ],
+              "properties": {
+                "status": {
+                  "type": "integer",
+                  "example": 403
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Forbidden"
+                }
+              }
+            }
+          }
+        }
+      },
+      "500": {
+        "description": "Internal Server Error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "status",
+                "message"
+              ],
+              "properties": {
+                "status": {
+                  "type": "integer",
+                  "example": 500
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Something went wrong"
+                },
+                "error": {
+                  "type": "string",
+                  "example": "Stack or internal error message"
+                }
+              }
+            }
+          }
+        }
+      },
+      "200.psychologists.list": {
+        "description": "OK",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "status",
+                "message",
+                "data",
+                "count",
+                "page",
+                "perPage",
+                "totalPages",
+                "hasNextPage",
+                "hasPrevPage"
+              ],
+              "properties": {
+                "status": {
+                  "type": "integer",
+                  "example": 200
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Successfully found psychologists!"
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/psychologist"
+                  }
+                },
+                "count": {
+                  "type": "integer",
+                  "example": 34
+                },
+                "page": {
+                  "type": "integer",
+                  "example": 1
+                },
+                "perPage": {
+                  "type": "integer",
+                  "example": 10
+                },
+                "totalPages": {
+                  "type": "integer",
+                  "example": 4
+                },
+                "hasNextPage": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "hasPrevPage": {
+                  "type": "boolean",
+                  "example": false
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

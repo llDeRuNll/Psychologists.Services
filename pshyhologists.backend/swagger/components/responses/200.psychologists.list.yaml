@@ -1,0 +1,44 @@
+description: OK
+content:
+  application/json:
+    schema:
+      type: object
+      required:
+        - status
+        - message
+        - data
+        - count
+        - page
+        - perPage
+        - totalPages
+        - hasNextPage
+        - hasPrevPage
+      properties:
+        status:
+          type: integer
+          example: 200
+        message:
+          type: string
+          example: Successfully found psychologists!
+        data:
+          type: array
+          items:
+            $ref: '../../components/schemas/psychologist.yaml'
+        count:
+          type: integer
+          example: 34
+        page:
+          type: integer
+          example: 1
+        perPage:
+          type: integer
+          example: 10
+        totalPages:
+          type: integer
+          example: 4
+        hasNextPage:
+          type: boolean
+          example: true
+        hasPrevPage:
+          type: boolean
+          example: false

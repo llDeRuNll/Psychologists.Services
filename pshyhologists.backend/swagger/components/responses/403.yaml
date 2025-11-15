@@ -1,0 +1,13 @@
+description: Forbidden (insufficient role/permissions)
+content:
+  application/json:
+    schema:
+      type: object
+      required: [status, message]
+      properties:
+        status:
+          type: integer
+          example: 403
+        message:
+          type: string
+          example: Forbidden

@@ -8,7 +8,7 @@ import createHttpError from 'http-errors';
 
 const PATH_JSON = path.join(process.cwd(), 'google-oauth.json');
 
-// 1) беремо redirect з ENV, 2) якщо нема — з файлу, 3) якщо нема — помилка
+
 let redirectUri = process.env.GOOGLE_OAUTH_REDIRECT_URI;
 
 if (!redirectUri) {
@@ -17,7 +17,9 @@ if (!redirectUri) {
     const parsed = JSON.parse(raw);
     redirectUri = parsed?.web?.redirect_uris?.[0];
   } catch (err) {
-    if (err.code !== 'ENOENT') throw err; // інші помилки файлу — пробросити
+
+    if (err.code !== 'ENOENT') throw err;
+
   }
 }
 
@@ -52,12 +54,11 @@ export const validateCode = async (code) => {
 };
 
 export const getFullNameFromGoogleTokenPayload = (payload) => {
-  let fullName = 'Guest';
   if (payload.given_name && payload.family_name) {
-    fullName = `${payload.given_name} ${payload.family_name}`;
-  } else if (payload.given_name) {
-    fullName = payload.given_name;
+    return `${payload.given_name} ${payload.family_name}`;
   }
-
-  return fullName;
+  if (payload.given_name) {
+    return payload.given_name;
+  }
+  return 'Guest';
 };
