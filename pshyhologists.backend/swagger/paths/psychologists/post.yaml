@@ -1,0 +1,88 @@
+tags:
+  - Psychologists
+summary: Create psychologist
+operationId: createPsychologist
+description: 'Create a psychologist with payload'
+security:
+  - bearerAuth: []
+requestBody:
+  required: true
+  content:
+    multipart/form-data:
+      schema:
+        type: object
+        required:
+          - name
+          - experience
+          - price_per_hour
+          - license
+          - specialization
+          - about
+        properties:
+          name:
+            description: "Psychologist's name"
+            type: string
+            example: 'Dr. Jane Smith'
+          avatar:
+            description: "Psychologist's avatar file (optional)"
+            type: string
+            format: binary
+          avatar_url:
+            description: 'Avatar URL (optional, used if no file uploaded)'
+            type: string
+            example: 'https://example.com/avatar.jpg'
+          experience:
+            description: 'Experience as a human-readable string'
+            type: string
+            example: '5 years'
+          price_per_hour:
+            description: 'Hourly rate (>= 0)'
+            type: number
+            example: 100
+          rating:
+            description: 'Initial rating (0..5, optional)'
+            type: number
+            minimum: 0
+            maximum: 5
+            example: 4.5
+          license:
+            description: 'License text'
+            type: string
+            example: 'Licensed Psychologist (License #12345)'
+          specialization:
+            description: 'Primary specialization'
+            type: string
+            example: 'Cognitive Behavioral Therapy'
+          initial_consultation:
+            description: 'Initial consultation info (optional)'
+            type: string
+            example: 'Free 15-minute initial consultation'
+          about:
+            description: 'About the psychologist'
+            type: string
+            example: 'Licensed psychologist with CBT focus and 5 years of practice.'
+responses:
+  '201':
+    description: Creates a psychologist
+    content:
+      application/json:
+        schema:
+          type: object
+          required: [status, message, data]
+          properties:
+            status:
+              type: integer
+              example: 201
+            message:
+              type: string
+              example: Successfully created a Psychologist!
+            data:
+              $ref: '../../components/schemas/psychologist.yaml'
+  '400':
+    $ref: '../../components/responses/400.yaml'
+  '401':
+    $ref: '../../components/responses/401.yaml'
+  '403':
+    $ref: '../../components/responses/403.yaml'
+  '500':
+    $ref: '../../components/responses/500.yaml'

@@ -1,0 +1,75 @@
+tags:
+  - Psychologists
+summary: Get psychologists (paginated)
+operationId: getPsychologists
+description: Returns a paginated list of psychologists with optional sorting and filtering.
+security:
+  - bearerAuth: []
+parameters:
+  - in: query
+    name: page
+    schema: { type: integer, minimum: 1, default: 1 }
+    description: Page number (1-based)
+  - in: query
+    name: perPage
+    schema: { type: integer, minimum: 1, default: 10 }
+    description: Items per page
+  - in: query
+    name: sortBy
+    schema:
+      type: string
+      enum:
+        [
+          _id,
+          name,
+          specialization,
+          experience,
+          rating,
+          price_per_hour,
+          createdAt,
+          updatedAt,
+        ]
+    description: Sort field
+  - in: query
+    name: sortOrder
+    schema: { type: string, enum: [asc, desc], default: asc }
+    description: Sort order
+  # filters
+  - in: query
+    name: specialization
+    schema: { type: string }
+  - in: query
+    name: minExperience
+    schema: { type: number, minimum: 0 }
+    description: Minimal experience in years (numeric)
+  - in: query
+    name: maxExperience
+    schema: { type: number, minimum: 0 }
+    description: Max experience in years (numeric)
+  - in: query
+    name: minPrice
+    schema: { type: number, minimum: 0 }
+  - in: query
+    name: maxPrice
+    schema: { type: number, minimum: 0 }
+  - in: query
+    name: minRating
+    schema: { type: number, minimum: 0, maximum: 5 }
+  - in: query
+    name: maxRating
+    schema: { type: number, minimum: 0, maximum: 5 }
+  - in: query
+    name: license
+    schema: { type: string }
+  - in: query
+    name: initial_consultation
+    schema: { type: string }
+responses:
+  '200':
+    $ref: '../../components/responses/200.psychologists.list.yaml'
+  '401':
+    $ref: '../../components/responses/401.yaml'
+  '403':
+    $ref: '../../components/responses/403.yaml'
+  '500':
+    $ref: '../../components/responses/500.yaml'

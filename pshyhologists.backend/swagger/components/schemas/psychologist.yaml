@@ -1,0 +1,61 @@
+type: object
+properties:
+  _id:
+    type: string
+    description: Mongo ObjectId
+    pattern: '^[a-fA-F0-9]{24}$'
+    example: '68fff9a7b8f32292632fa4cc'
+  name:
+    type: string
+    example: 'Dr. Jane Smith'
+  avatar_url:
+    type: string
+    format: uri
+    example: 'https://example.com/avatar.jpg'
+  experience:
+    type: string
+    description: Years of experience in text form
+    example: '5 years'
+  price_per_hour:
+    type: number
+    minimum: 0
+    example: 100
+  reviews:
+    type: array
+  rating:
+    type: number
+    minimum: 0
+    maximum: 5
+    default: 0
+    example: 4.5
+  license:
+    type: string
+    example: 'Licensed Psychologist (License #12345)'
+  specialization:
+    type: string
+    example: 'Cognitive Behavioral Therapy'
+  initial_consultation:
+    type: string
+    example: 'Free 15-minute initial consultation'
+  about:
+    type: string
+    maxLength: 8000
+    example: 'Licensed psychologist with CBT focus and 5 years of practice.'
+  ParentUserId:
+    type: string
+    description: Reference to users._id
+    pattern: '^[a-fA-F0-9]{24}$'
+    example: '6903c1b40b8a4cb0b156c14c'
+  createdAt:
+    type: string
+    format: date-time
+  updatedAt:
+    type: string
+    format: date-time
+required:
+  - name
+  - experience
+  - price_per_hour
+  - license
+  - specialization
+  - about
