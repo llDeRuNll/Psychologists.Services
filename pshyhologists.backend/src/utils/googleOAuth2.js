@@ -8,6 +8,7 @@ import createHttpError from 'http-errors';
 
 const PATH_JSON = path.join(process.cwd(), 'google-oauth.json');
 
+
 let redirectUri = process.env.GOOGLE_OAUTH_REDIRECT_URI;
 
 if (!redirectUri) {
@@ -16,7 +17,9 @@ if (!redirectUri) {
     const parsed = JSON.parse(raw);
     redirectUri = parsed?.web?.redirect_uris?.[0];
   } catch (err) {
+
     if (err.code !== 'ENOENT') throw err;
+
   }
 }
 
