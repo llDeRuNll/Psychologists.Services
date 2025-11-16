@@ -11,7 +11,7 @@ properties:
   avatar_url:
     type: string
     format: uri
-    example: 'https://example.com/avatar.jpg'
+    example: 'https://ftp.goit.study/img/avatars/1.jpg'
   experience:
     type: string
     description: Years of experience in text form

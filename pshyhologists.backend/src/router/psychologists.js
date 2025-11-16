@@ -40,7 +40,7 @@ router.get(
 router.post(
   '/',
   checkRoles(ROLES.PSYCHOLOGIST),
-  upload.single('photo'),
+  upload.single('avatar'),
   validateBody(createPsychologistSchema),
   ctrlWrapper(createPsychologistController),
 );
@@ -58,7 +58,7 @@ router.delete(
 router.put(
   '/:psychologistId',
   isValidId,
-  upload.single('photo'),
+  upload.single('avatar'),
   checkRoles(ROLES.PSYCHOLOGIST),
   validateBody(upsertPsychologistSchema),
   ctrlWrapper(upsertPsychologController),
@@ -68,7 +68,7 @@ router.put(
 router.patch(
   '/:psychologistId',
   isValidId,
-  upload.single('photo'),
+  upload.single('avatar'),
   checkRoles(ROLES.PSYCHOLOGIST),
   validateBody(upsertPsychologistSchema),
   ctrlWrapper(patchPsychologController),
