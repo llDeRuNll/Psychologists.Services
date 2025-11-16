@@ -7,6 +7,7 @@ export const createPsychologistSchema = Joi.object({
     'string.min': 'Name should have a minimum length of {#limit}',
   }),
   avatar_url: Joi.string().uri().optional().allow(''),
+  avatar: Joi.any().optional(),
   experience: Joi.string().min(1).max(100).required().messages({
     'string.empty': 'Experience cannot be empty',
     'string.min': 'Experience should have a minimum length of {#limit}',
@@ -74,6 +75,7 @@ export const upsertPsychologistSchema = Joi.object({
     'number.max': 'Rating cannot exceed {#limit}',
   }),
   avatar_url: Joi.string().uri().optional().allow(''),
+  avatar: Joi.any().optional(),
   experience: Joi.string().min(1).max(100).messages({
     'string.empty': 'Experience cannot be empty',
     'string.min': 'Experience should have a minimum length of {#limit}',

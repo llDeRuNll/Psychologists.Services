@@ -24,13 +24,12 @@ requestBody:
             type: string
             example: 'Dr. Jane Smith'
           avatar:
-            description: "Psychologist's avatar file (optional)"
             type: string
             format: binary
           avatar_url:
             description: 'Avatar URL (optional, used if no file uploaded)'
             type: string
-            example: 'https://example.com/avatar.jpg'
+            example: 'https://ftp.goit.study/img/avatars/1.jpg'
           experience:
             description: 'Experience as a human-readable string'
             type: string

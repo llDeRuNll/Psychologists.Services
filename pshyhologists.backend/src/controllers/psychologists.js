@@ -61,7 +61,24 @@ export const getPsychologistByIdController = async (req, res, next) => {
 };
 
 export const createPsychologistController = async (req, res) => {
-  const psychologist = await createPsychologist(req.body);
+  let avatarUrl = (req.body.avatar_url || '').trim();
+
+  if (req.file) {
+    avatarUrl = await saveFileToCloudinary(req.file);
+  }
+
+  const payload = {
+    ...req.body,
+    avatar_url: avatarUrl,
+    price_per_hour:
+      req.body.price_per_hour !== undefined
+        ? Number(req.body.price_per_hour)
+        : undefined,
+    rating: req.body.rating !== undefined ? Number(req.body.rating) : undefined,
+  };
+  delete payload.avatar;
+
+  const psychologist = await createPsychologist(payload);
 
   res.status(201).json({
     status: 201,

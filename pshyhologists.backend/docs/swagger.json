@@ -11,7 +11,7 @@
   },
   "servers": [
     {
-      "url": "https://pshyhologists.service.api"
+      "url": "https://psyсhologists.service.api"
     },
     {
       "url": "/"
@@ -28,7 +28,7 @@
     }
   ],
   "paths": {
-    "/pshyhologists": {
+    "/psychologists": {
       "get": {
         "tags": [
           "Psychologists"
@@ -215,14 +215,13 @@
                     "example": "Dr. Jane Smith"
                   },
                   "avatar": {
-                    "description": "Psychologist's avatar file (optional)",
                     "type": "string",
                     "format": "binary"
                   },
                   "avatar_url": {
                     "description": "Avatar URL (optional, used if no file uploaded)",
                     "type": "string",
-                    "example": "https://example.com/avatar.jpg"
+                    "example": "https://ftp.goit.study/img/avatars/1.jpg"
                   },
                   "experience": {
                     "description": "Experience as a human-readable string",
@@ -310,7 +309,7 @@
         }
       }
     },
-    "/pshyhologists/{id}": {
+    "/psychologists/{id}": {
       "get": {
         "tags": [
           "Psychologists"
@@ -368,6 +367,246 @@
             "$ref": "#/components/responses/401"
           }
         }
+      },
+      "put": {
+        "tags": [
+          "Psychologists"
+        ],
+        "summary": "Upsert psychologist (create or update)",
+        "operationId": "upsertPsychologist",
+        "description": "Updates a psychologist if exists, otherwise creates a new one (upsert).\n",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "68fff9a7b8f32292632fa4cb"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/psychologistUpsertPayload"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/psychologistUpsertPayload"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Successfully upserted a psychologist!"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/psychologist"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created (upsert)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 201
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Successfully upserted a psychologist!"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/psychologist"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Psychologists"
+        ],
+        "summary": "Patch psychologist",
+        "operationId": "patchPsychologist",
+        "description": "Partial update (JSON or multipart/form-data).",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "68fff9a7b8f32292632fa4cb"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/psychologistUpsertPayload"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/psychologistUpsertPayload"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Patched",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Successfully patched psychologist!"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/psychologist"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Psychologists"
+        ],
+        "summary": "Delete psychologist",
+        "operationId": "deletePsychologist",
+        "description": "Delete psychologist by id.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "68fff9a7b8f32292632fa4cb"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Psychologist deleted"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
       }
     }
   },
@@ -395,7 +634,7 @@
           "avatar_url": {
             "type": "string",
             "format": "uri",
-            "example": "https://example.com/avatar.jpg"
+            "example": "https://ftp.goit.study/img/avatars/1.jpg"
           },
           "experience": {
             "type": "string",
@@ -457,6 +696,57 @@
           "specialization",
           "about"
         ]
+      },
+      "psychologistUpsertPayload": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 3,
+            "example": "Dr. Jane Smith"
+          },
+          "avatar_url": {
+            "type": "string",
+            "format": "uri",
+            "example": "https://ftp.goit.study/img/avatars/1.jpg"
+          },
+          "experience": {
+            "type": "string",
+            "example": "5 years"
+          },
+          "price_per_hour": {
+            "type": "number",
+            "minimum": 0,
+            "example": 100
+          },
+          "rating": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 5,
+            "example": 4.5
+          },
+          "license": {
+            "type": "string",
+            "example": "Licensed Psychologist (License"
+          },
+          "specialization": {
+            "type": "string",
+            "example": "Cognitive Behavioral Therapy"
+          },
+          "initial_consultation": {
+            "type": "string",
+            "example": "Free 15-minute initial consultation"
+          },
+          "about": {
+            "type": "string",
+            "example": "Short bio..."
+          },
+          "avatar": {
+            "type": "string",
+            "format": "binary",
+            "description": "Avatar image file (when using multipart/form-data)"
+          }
+        }
       }
     },
     "responses": {
@@ -558,6 +848,30 @@
                 "message": {
                   "type": "string",
                   "example": "Forbidden"
+                }
+              }
+            }
+          }
+        }
+      },
+      "404": {
+        "description": "Not Found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "status",
+                "message"
+              ],
+              "properties": {
+                "status": {
+                  "type": "integer",
+                  "example": 404
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Psychologist not found"
                 }
               }
             }

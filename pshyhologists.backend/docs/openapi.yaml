@@ -14,17 +14,23 @@ tags:
   - name: Auth
     description: Auth operations.
 servers:
-  - url: https://pshyhologists.service.api
+  - url: https://psyсhologists.service.api
   - url: /
 paths:
-  /pshyhologists:
+  /psychologists:
     get:
       $ref: ../swagger/paths/psychologists/get.yaml
     post:
       $ref: ../swagger/paths/psychologists/post.yaml
-  /pshyhologists/{id}:
+  /psychologists/{id}:
     get:
       $ref: ../swagger/paths/psychologists/{id}/get.yaml
+    put:
+      $ref: ../swagger/paths/psychologists/{id}/put.yaml
+    patch:
+      $ref: ../swagger/paths/psychologists/{id}/patch.yaml
+    delete:
+      $ref: ../swagger/paths/psychologists/{id}/delete.yaml
 components:
   securitySchemes:
     bearerAuth:

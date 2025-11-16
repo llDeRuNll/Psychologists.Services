@@ -1,0 +1,38 @@
+type: object
+properties:
+  name:
+    type: string
+    minLength: 3
+    example: Dr. Jane Smith
+  avatar_url:
+    type: string
+    format: uri
+    example: https://ftp.goit.study/img/avatars/1.jpg
+  experience:
+    type: string
+    example: 5 years
+  price_per_hour:
+    type: number
+    minimum: 0
+    example: 100
+  rating:
+    type: number
+    minimum: 0
+    maximum: 5
+    example: 4.5
+  license:
+    type: string
+    example: Licensed Psychologist (License #12345)
+  specialization:
+    type: string
+    example: Cognitive Behavioral Therapy
+  initial_consultation:
+    type: string
+    example: Free 15-minute initial consultation
+  about:
+    type: string
+    example: Short bio...
+  avatar:
+    type: string
+    format: binary
+    description: Avatar image file (when using multipart/form-data)
