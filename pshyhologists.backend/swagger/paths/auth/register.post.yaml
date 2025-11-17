@@ -1,0 +1,36 @@
+tags:
+  - Auth
+summary: Register user
+operationId: registerUser
+description: Create a new user account.
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        $ref: '../../components/schemas/authRegisterPayload.yaml'
+
+responses:
+  '201':
+    description: User created
+    content:
+      application/json:
+        schema:
+          type: object
+          required: [status, message, data]
+          properties:
+            status:
+              type: integer
+              example: 201
+            message:
+              type: string
+              example: Successfully registered!
+            data:
+              $ref: '../../components/schemas/user.yaml'
+
+  '400':
+    $ref: '../../components/responses/400.yaml'
+  '500':
+    $ref: '../../components/responses/500.yaml'
+
+security: []

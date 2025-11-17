@@ -1,0 +1,27 @@
+type: object
+required: [_id, email, role, createdAt, updatedAt]
+properties:
+  _id:
+    type: string
+    example: 691b615c9c3a84a086d89427
+  email:
+    type: string
+    format: email
+    example: user@example.com
+  name:
+    type: string
+    example: John Doe
+  role:
+    type: string
+    enum: [psychologist, client]
+    example: client
+  avatar_url:
+    type: string
+    format: uri
+    example: https://ftp.goit.study/img/avatars/1.jpg
+  createdAt:
+    type: string
+    format: date-time
+  updatedAt:
+    type: string
+    format: date-time
