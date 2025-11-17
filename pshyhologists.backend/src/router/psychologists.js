@@ -44,7 +44,6 @@ router.post(
   validateBody(createPsychologistSchema),
   ctrlWrapper(createPsychologistController),
 );
-export default router;
 
 //DELETE /:psychologistId
 router.delete(
@@ -73,3 +72,4 @@ router.patch(
   validateBody(upsertPsychologistSchema),
   ctrlWrapper(patchPsychologController),
 );
+export default router;

@@ -114,26 +114,47 @@ export const upsertPsychologController = async (req, res) => {
 };
 
 export const patchPsychologController = async (req, res, next) => {
-  const { psychologistId } = req.params;
-  const photo = req.file;
+  try {
+    const { psychologistId } = req.params;
 
-  let avatar_url;
-  if (photo) {
-    if (getEnvVar('ENABLE_CLOUDINARY') === 'true') {
-      avatar_url = await saveFileToCloudinary(photo);
-    } else {
-      avatar_url = await saveFileToUploadDir(photo);
+    let avatar_url;
+    if (req.file) {
+      if (getEnvVar('ENABLE_CLOUDINARY') === 'true') {
+        avatar_url = await saveFileToCloudinary(req.file);
+      } else {
+        avatar_url = await saveFileToUploadDir(req.file);
+      }
     }
 
-    const result = await upsertPsycholog(psychologistId, req.body, {
-      photo: avatar_url,
+    const payload = {
+      ...req.body,
+      ...(avatar_url ? { avatar_url } : {}),
+    };
+
+    if (payload.price_per_hour !== undefined) {
+      payload.price_per_hour = Number(payload.price_per_hour);
+    }
+    if (payload.rating !== undefined) {
+      payload.rating = Number(payload.rating);
+    }
+
+    if (Object.keys(payload).length === 0) {
+      return res
+        .status(400)
+        .json({ status: 400, message: 'No fields to update' });
+    }
+
+    const result = await upsertPsycholog(psychologistId, payload, {
+      upsert: false,
     });
     if (!result) throw createHttpError(404, 'Psychologist not found');
 
-    res.status(200).json({
+    return res.status(200).json({
       status: 200,
       message: `Successfully patched psychologist with id ${psychologistId}!`,
       data: result.psychologist,
     });
+  } catch (err) {
+    next(err);
   }
 };
