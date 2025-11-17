@@ -1,0 +1,34 @@
+tags:
+  - Auth
+summary: Login
+operationId: login
+description: Login with email and password. Returns accessToken in body and sets HttpOnly refreshToken cookie.
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        $ref: '../../components/schemas/authLoginPayload.yaml'
+
+responses:
+  '200':
+    description: Logged in
+    headers:
+      'Set-Cookie':
+        description: refreshToken cookie (HttpOnly; Path=/; Max-Age=2592000; SameSite=Lax)
+        schema:
+          type: string
+        example: refreshToken=abc.def.ghi; HttpOnly; Path=/; Max-Age=2592000; SameSite=Lax
+    content:
+      application/json:
+        schema:
+          $ref: '../../components/schemas/authTokens.yaml'
+
+  '400':
+    $ref: '../../components/responses/400.yaml'
+  '401':
+    $ref: '../../components/responses/401.yaml'
+  '500':
+    $ref: '../../components/responses/500.yaml'
+
+security: []

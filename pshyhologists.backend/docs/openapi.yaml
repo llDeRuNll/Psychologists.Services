@@ -31,8 +31,21 @@ paths:
       $ref: ../swagger/paths/psychologists/{id}/patch.yaml
     delete:
       $ref: ../swagger/paths/psychologists/{id}/delete.yaml
+  /auth/register:
+    post:
+      $ref: ../swagger/paths/auth/register.post.yaml
+  /auth/login:
+    post:
+      $ref: ../swagger/paths/auth/login.post.yaml
+  /auth/refresh:
+    post:
+      $ref: ../swagger/paths/auth/refresh.post.yaml
+  /auth/logout:
+    post:
+      $ref: ../swagger/paths/auth/logout.post.yaml
+  /auth/me:
+    get:
+      $ref: ../swagger/paths/auth/me.get.yaml
 components:
   securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
+    $ref: ../swagger/components/schemas/securitySchemes.yaml

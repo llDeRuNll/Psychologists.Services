@@ -1,0 +1,21 @@
+tags: [Auth]
+summary: Refresh access token
+operationId: refresh
+description: >
+  Issue new accessToken using refreshToken cookie.
+security:
+  - cookieAuth: []
+responses:
+  '200':
+    description: Refreshed
+    headers:
+      Set-Cookie:
+        description: new refreshToken cookie (HttpOnly)
+        schema: { type: string }
+        example: refreshToken=new.token.here; HttpOnly; Path=/; Max-Age=2592000; SameSite=Lax
+    content:
+      application/json:
+        schema:
+          $ref: '../../components/schemas/authTokens.yaml'
+  '401': { $ref: '../../components/responses/401.yaml' }
+  '500': { $ref: '../../components/responses/500.yaml' }

@@ -608,13 +608,255 @@
           }
         }
       }
+    },
+    "/auth/register": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Register user",
+        "operationId": "registerUser",
+        "description": "Create a new user account.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/authRegisterPayload"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 201
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Successfully registered!"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/user"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "security": []
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Login",
+        "operationId": "login",
+        "description": "Login with email and password. Returns accessToken in body and sets HttpOnly refreshToken cookie.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/authLoginPayload"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Logged in",
+            "headers": {
+              "Set-Cookie": {
+                "description": "refreshToken cookie (HttpOnly; Path=/; Max-Age=2592000; SameSite=Lax)",
+                "schema": {
+                  "type": "string"
+                },
+                "example": "refreshToken=abc.def.ghi; HttpOnly; Path=/; Max-Age=2592000; SameSite=Lax"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/authTokens"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        },
+        "security": []
+      }
+    },
+    "/auth/refresh": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Refresh access token",
+        "operationId": "refresh",
+        "description": "Issue new accessToken using refreshToken cookie.\n",
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Refreshed",
+            "headers": {
+              "Set-Cookie": {
+                "description": "new refreshToken cookie (HttpOnly)",
+                "schema": {
+                  "type": "string"
+                },
+                "example": "refreshToken=new.token.here; HttpOnly; Path=/; Max-Age=2592000; SameSite=Lax"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/authTokens"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Logout",
+        "operationId": "logout",
+        "description": "Invalidate session and clear refreshToken cookie.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Logged out",
+            "headers": {
+              "Set-Cookie": {
+                "description": "Clears refreshToken cookie",
+                "schema": {
+                  "type": "string"
+                },
+                "example": "refreshToken=; HttpOnly; Path=/; Max-Age=0; SameSite=Lax"
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/auth/me": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Get current user",
+        "operationId": "getMe",
+        "description": "Returns authenticated user's profile.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Current user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Successfully found current user!"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/user"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
     }
   },
   "components": {
     "securitySchemes": {
       "bearerAuth": {
         "type": "http",
-        "scheme": "bearer"
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      },
+      "cookieAuth": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "refreshToken"
       }
     },
     "schemas": {
@@ -745,6 +987,126 @@
             "type": "string",
             "format": "binary",
             "description": "Avatar image file (when using multipart/form-data)"
+          }
+        }
+      },
+      "authRegisterPayload": {
+        "type": "object",
+        "required": [
+          "email",
+          "password",
+          "name",
+          "role"
+        ],
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "user@example.com"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 6,
+            "example": "qwerty123"
+          },
+          "name": {
+            "type": "string",
+            "example": "John Doe"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "psychologist",
+              "client"
+            ],
+            "example": "client"
+          }
+        }
+      },
+      "user": {
+        "type": "object",
+        "required": [
+          "_id",
+          "email",
+          "role",
+          "createdAt",
+          "updatedAt"
+        ],
+        "properties": {
+          "_id": {
+            "type": "string",
+            "example": "691b615c9c3a84a086d89427"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "user@example.com"
+          },
+          "name": {
+            "type": "string",
+            "example": "John Doe"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "psychologist",
+              "client"
+            ],
+            "example": "client"
+          },
+          "avatar_url": {
+            "type": "string",
+            "format": "uri",
+            "example": "https://ftp.goit.study/img/avatars/1.jpg"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "authLoginPayload": {
+        "type": "object",
+        "required": [
+          "email",
+          "password"
+        ],
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "user@example.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "qwerty123"
+          }
+        }
+      },
+      "authTokens": {
+        "type": "object",
+        "required": [
+          "accessToken",
+          "accessTokenValidUntil",
+          "user"
+        ],
+        "properties": {
+          "accessToken": {
+            "type": "string",
+            "description": "JWT for Authorization header (Bearer)",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          },
+          "accessTokenValidUntil": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2025-12-31T23:59:59.000Z"
+          },
+          "user": {
+            "$ref": "#/components/schemas/user"
           }
         }
       }

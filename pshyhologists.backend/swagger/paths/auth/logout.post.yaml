@@ -1,0 +1,16 @@
+tags: [Auth]
+summary: Logout
+operationId: logout
+description: Invalidate session and clear refreshToken cookie.
+security:
+  - bearerAuth: []
+responses:
+  '204':
+    description: Logged out
+    headers:
+      Set-Cookie:
+        description: Clears refreshToken cookie
+        schema: { type: string }
+        example: refreshToken=; HttpOnly; Path=/; Max-Age=0; SameSite=Lax
+  '401': { $ref: '../../components/responses/401.yaml' }
+  '500': { $ref: '../../components/responses/500.yaml' }

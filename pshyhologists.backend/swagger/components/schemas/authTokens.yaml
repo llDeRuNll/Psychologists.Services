@@ -1,0 +1,13 @@
+type: object
+required: [accessToken, accessTokenValidUntil, user]
+properties:
+  accessToken:
+    type: string
+    description: JWT for Authorization header (Bearer)
+    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+  accessTokenValidUntil:
+    type: string
+    format: date-time
+    example: 2025-12-31T23:59:59.000Z
+  user:
+    $ref: ./user.yaml
