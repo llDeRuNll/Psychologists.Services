@@ -43,9 +43,6 @@ paths:
   /auth/logout:
     post:
       $ref: ../swagger/paths/auth/logout.post.yaml
-  /auth/me:
-    get:
-      $ref: ../swagger/paths/auth/me.get.yaml
 components:
   securitySchemes:
     $ref: ../swagger/components/schemas/securitySchemes.yaml
