@@ -1,4 +1,4 @@
-import { configureStore, combineReducers } from "@reduxjs/toolkit";
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import {
   persistStore,
   persistReducer,
@@ -13,7 +13,6 @@ import storage from "redux-persist/lib/storage";
 
 import authReducer from "./slices/authSlice";
 import psychologistsReducer from "./slices/psychologistsSlice";
-import filtersReducer from "./slices/filtersSlice";
 
 const authPersistConfig = {
   key: "auth",
@@ -24,7 +23,6 @@ const authPersistConfig = {
 const rootReducer = combineReducers({
   auth: persistReducer(authPersistConfig, authReducer),
   psychologists: psychologistsReducer,
-  filters: filtersReducer,
 });
 
 export const store = configureStore({
@@ -35,7 +33,6 @@ export const store = configureStore({
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
     }),
-  devTools: import.meta.env.MODE !== "production",
 });
 
 export const persistor = persistStore(store);
