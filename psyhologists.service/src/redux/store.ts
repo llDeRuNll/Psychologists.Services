@@ -1,9 +1,4 @@
-// src/store.ts
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
-import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
-
-import usersReducer from "./users/slice";
-
 import {
   persistStore,
   persistReducer,
@@ -16,16 +11,20 @@ import {
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
-const usersPersistConfig = {
-  key: "users",
+import authReducer from "./slices/authSlice";
+import psychologistsReducer from "./slices/psychologistsSlice";
+import filtersReducer from "./slices/filtersSlice";
+
+const authPersistConfig = {
+  key: "auth",
   storage,
-  whitelist: ["filters"],
+  whitelist: ["accessToken"],
 };
 
-const persistedUsersReducer = persistReducer(usersPersistConfig, usersReducer);
-
 const rootReducer = combineReducers({
-  users: persistedUsersReducer,
+  auth: persistReducer(authPersistConfig, authReducer),
+  psychologists: psychologistsReducer,
+  filters: filtersReducer,
 });
 
 export const store = configureStore({
@@ -36,13 +35,10 @@ export const store = configureStore({
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
     }),
-  devTools: process.env.NODE_ENV !== "production",
+  devTools: import.meta.env.MODE !== "production",
 });
 
 export const persistor = persistStore(store);
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
-
-export const useAppDispatch: () => AppDispatch = useDispatch;
-export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
